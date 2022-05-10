@@ -185,7 +185,7 @@ class Article
 
     public function getImagePath()
     {
-        return UploaderHelper::PROPERTY_IMAGE.'/'.$this->getImageFilename();
+        return UploaderHelper::ARTICLE_IMAGE.'/'.$this->getImageFilename();
     }
 
     /**

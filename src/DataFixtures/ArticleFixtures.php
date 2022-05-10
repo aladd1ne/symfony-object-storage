@@ -95,7 +95,7 @@ EOF
         $fs = new Filesystem();
         $targetPath = sys_get_temp_dir() . '/' . $randomImage;
         $fs->copy(__DIR__ . '/images/' . $randomImage, $targetPath, true);
-        return $this->uploaderHelper->UploadArticleImage(new File($targetPath));
+        return $this->uploaderHelper->UploadArticleImage(new File($targetPath),null);
 
     }
 }
