@@ -87,10 +87,16 @@ class Article
      */
     private $specificLocationName;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ArticleRefrence", mappedBy="article")
+     */
+    private $articleRefrences;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->articleRefrences = new ArrayCollection();
     }
 
     public function getId()
@@ -303,6 +309,37 @@ class Article
     public function setSpecificLocationName(?string $specificLocationName): self
     {
         $this->specificLocationName = $specificLocationName;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ArticleRefrence[]
+     */
+    public function getArticleRefrences(): Collection
+    {
+        return $this->articleRefrences;
+    }
+
+    public function addArticleRefrence(ArticleRefrence $articleRefrence): self
+    {
+        if (!$this->articleRefrences->contains($articleRefrence)) {
+            $this->articleRefrences[] = $articleRefrence;
+            $articleRefrence->setArticle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticleRefrence(ArticleRefrence $articleRefrence): self
+    {
+        if ($this->articleRefrences->contains($articleRefrence)) {
+            $this->articleRefrences->removeElement($articleRefrence);
+            // set the owning side to null (unless already changed)
+            if ($articleRefrence->getArticle() === $this) {
+                $articleRefrence->setArticle(null);
+            }
+        }
 
         return $this;
     }

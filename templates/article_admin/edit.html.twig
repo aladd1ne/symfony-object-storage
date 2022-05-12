@@ -2,10 +2,42 @@
 
 {% block content_body %}
     <h1>Edit the Article! 🚀</h1>
+    <hr>
+    <div class="row">
+        <div class="col-sm-7">
+            <h3>Details</h3>
+            {{ include('article_admin/_form.html.twig', {
+                button_text: 'Update!'
+            }) }}
+        </div>
+        <div class="col-sm-5">
+            <h3>References</h3>
 
-    {{ include('article_admin/_form.html.twig', {
-        button_text: 'Update!'
-    }) }}
+            <ul class="list-group small">
+                {% for reference in article.articleRefrences %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ reference.originalFilename }}
+
+                        <span>
+                            <a href="{{ path('admin_article_download_reference', {
+                                id: reference.id
+                            }) }}"><span class="fa fa-download"></span></a>
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <hr>
+
+            <form action="{{ path('admin_article_add_reference', {
+                id: article.id
+            }) }}" method="POST" enctype="multipart/form-data">
+                <input type="file" name="reference">
+                <button type="submit" class="btn btn-sm btn-primary">Upload</button>
+            </form>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block javascripts %}
