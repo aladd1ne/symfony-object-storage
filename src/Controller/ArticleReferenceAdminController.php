@@ -25,7 +25,7 @@ class ArticleReferenceAdminController extends BaseController
     {
         /** @var UploadedFile $uploadedFile */
         $uploadedFile = $request->files->get('reference');
-
+        dump($uploadedFile);
         $violations = $validator->validate(
             $uploadedFile,
             [
@@ -50,15 +50,8 @@ class ArticleReferenceAdminController extends BaseController
         );
 
         if ($violations->count() > 0) {
-            /**
-             * @var ConstraintViolation $violation
-             */
-            $violation = $violations[0];
-            $this->addFlash('error', $violation->getMessage());
 
-            return $this->redirectToRoute('admin_article_edit', [
-                'id' => $article->getId()
-            ]);
+            return $this->json($violations, 400);
         }
 
         $filename = $uploaderHelper->uploadArticleReference($uploadedFile);
@@ -70,9 +63,14 @@ class ArticleReferenceAdminController extends BaseController
         $entityManager->persist($articleReference);
         $entityManager->flush();
 
-        return $this->redirectToRoute('admin_article_edit', [
-            'id' => $article->getId()
-        ]);
+        return $this->json(
+            $articleReference,
+            201,
+            [],
+            [
+                'groups' => ['main']
+            ]
+        );
     }
 
     /**
@@ -85,9 +83,9 @@ class ArticleReferenceAdminController extends BaseController
             $outputStream = fopen('php://output', 'wb');
             $fileStream = $uploaderHelper->readStream($reference->getFilePath(), false);
 
-            stream_copy_to_stream($fileStream,$outputStream);
+            stream_copy_to_stream($fileStream, $outputStream);
         });
-        $response->headers->set('content-Type',$reference->getMimeType());
+        $response->headers->set('content-Type', $reference->getMimeType());
 
         $disposition = HeaderUtils::makeDisposition(
             HeaderUtils::DISPOSITION_ATTACHMENT,
@@ -97,4 +95,22 @@ class ArticleReferenceAdminController extends BaseController
         return $response;
 //        $this->denyAccessUnlessGranted('MABAGE',$article);
     }
+
+    /**
+     * @Route("/admin/article/{id}/references", methods="GET", name="admin_article_list_references")
+     */
+    public function getArticleReferences(Article $article)
+    {
+        return $this->json(
+            $article->getArticleRefrences(),
+            200,
+            [],
+            [
+                'groups' => ['main']
+            ]
+        );
+    }
+
+
 }
+

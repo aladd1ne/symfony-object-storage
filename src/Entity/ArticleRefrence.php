@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\service\UploaderHelper;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRefrenceRepository")
@@ -14,6 +15,7 @@ class ArticleRefrence
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("main")
      */
     private $id;
 
@@ -25,16 +27,19 @@ class ArticleRefrence
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("main")
      */
     private $filename;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("main")
      */
     private $originalFilename;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("main")
      */
     private $mimeType;
     public function __construct(Article $article)
